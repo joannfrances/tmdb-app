@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Movie } from "@/types/movie";
 import { useAuth } from "@/lib/hooks/context/auth-context";
 import { useWatchlist } from "@/lib/hooks/context/watchlist-context";
@@ -24,6 +24,7 @@ export default function WatchList({
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   const { accountId } = useAuth();
   const { removeFromWatchlist } = useWatchlist();
+  const watchlistRef = useRef<HTMLDivElement>(null);
 
   const fetchWatchlist = useCallback(
     async (page: number) => {
@@ -76,16 +77,21 @@ export default function WatchList({
     }
   };
 
-  // Expose refresh method to parent through useEffect
   useEffect(() => {
     if (window) {
-      window.refreshWatchlist = refresh;
+      window.refreshWatchlist = async () => {
+        await fetchWatchlist(1);
+        watchlistRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      };
     }
-  }, [refresh]);
+  }, [fetchWatchlist]);
 
   return (
     <>
-      <div className={`py-8 ${className}`}>
+      <div ref={watchlistRef} className={`py-8 ${className}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">My Watchlist</h2>
