@@ -56,9 +56,10 @@ export default function MovieCard({
         <Image
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{objectFit:"cover"}}
           className="rounded-t-lg"
+          priority
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>

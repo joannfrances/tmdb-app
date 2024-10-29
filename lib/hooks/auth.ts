@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { COOKIE_NAMES, COOKIE_OPTIONS } from "../constants/auth";
+import { COOKIE_NAMES } from "../constants/auth";
 
-interface TMDBAuth {
+export interface TMDBAuth {
   accountId: string | null;
   sessionId: string | null;
   isAuthenticated: boolean;
@@ -11,24 +11,12 @@ interface TMDBAuth {
   clearTMDBAuth: () => void;
 }
 
-function getCookie(name: string): string | null {
+export function getCookie(name: string): string | null {
   const cookie = document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${name}=`));
 
   return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
-}
-
-function setCookie(name: string, value: string, options = COOKIE_OPTIONS) {
-  const cookieValue = encodeURIComponent(value);
-  let cookieString = `${name}=${cookieValue}`;
-
-  if (options.maxAge) cookieString += `; Max-Age=${options.maxAge}`;
-  if (options.secure) cookieString += "; Secure";
-  if (options.sameSite) cookieString += `; SameSite=${options.sameSite}`;
-  if (options.path) cookieString += `; Path=${options.path}`;
-
-  document.cookie = cookieString;
 }
 
 function deleteCookie(name: string) {
@@ -48,17 +36,37 @@ export const useTMDBAuth = (): TMDBAuth => {
   }, []);
 
   const setTMDBAuth = (newAccountId: string, newSessionId: string) => {
-    setCookie(COOKIE_NAMES.ACCOUNT_ID, newAccountId);
-    setCookie(COOKIE_NAMES.SESSION_ID, newSessionId);
     setAccountId(newAccountId);
     setSessionId(newSessionId);
   };
 
-  const clearTMDBAuth = () => {
-    deleteCookie(COOKIE_NAMES.ACCOUNT_ID);
-    deleteCookie(COOKIE_NAMES.SESSION_ID);
-    setAccountId(null);
-    setSessionId(null);
+  const clearTMDBAuth = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to logout");
+      }
+
+      // Clear local state
+      setAccountId(null);
+      setSessionId(null);
+      deleteCookie(COOKIE_NAMES.ACCOUNT_ID);
+      deleteCookie(COOKIE_NAMES.SESSION_ID);
+    } catch (error) {
+      console.error("Error clearing TMDB auth:", error);
+      // Still clear local state even if API request fails
+      setAccountId(null);
+      setSessionId(null);
+      deleteCookie(COOKIE_NAMES.ACCOUNT_ID);
+      deleteCookie(COOKIE_NAMES.SESSION_ID);
+      throw error;
+    }
   };
 
   return {

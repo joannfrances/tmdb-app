@@ -55,8 +55,10 @@ export default function WatchList({
   }, [fetchWatchlist, currentPage]);
 
   useEffect(() => {
-    fetchWatchlist(1);
-  }, [fetchWatchlist]);
+    if (accountId) {
+      fetchWatchlist(1);
+    }
+  }, [accountId, fetchWatchlist]);
 
   const handleRemoveFromWatchlist = async (movieId: number) => {
     setSelectedMovieId(movieId);

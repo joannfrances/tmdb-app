@@ -16,8 +16,8 @@ export default function ListCard({ list, onSelect, onDelete }: ListCardProps) {
             <Image
               src={`https://image.tmdb.org/t/p/w500${list.poster_path}`}
               alt={list.name}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{objectFit:"cover"}}
               className="rounded-t-lg"
             />
           ) : (

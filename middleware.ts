@@ -20,8 +20,12 @@ export function middleware(req: NextRequest) {
   const sessionId = req.cookies.get(COOKIE_NAMES.SESSION_ID);
   const publicPaths = ["/login"];
 
-  if(sessionId && pathname === '/login') { 
+  if (sessionId && pathname === '/login') { 
     return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  if (sessionId && pathname === '/dashboard') {
+    return NextResponse.next();
   }
 
   if (!sessionId && !publicPaths.includes(pathname)) {

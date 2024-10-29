@@ -12,8 +12,8 @@ export async function GET(
 ) {
   try {
     const { accountId } = await context.params;
-    const { searchParams } = new URL(request.url);
-    const page = searchParams.get("page") || "1";
+    const url = new URL(request.url);
+    const page = url.searchParams.get("page") || "1";
     const cookieStore = await cookies();
     const sessionId = cookieStore.get(COOKIE_NAMES.SESSION_ID)?.value;
 

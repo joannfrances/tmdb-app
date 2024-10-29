@@ -1,0 +1,32 @@
+{
+  "title": "Movie Preferences Survey",
+  "pages": [
+    {
+      "name": "preferences",
+      "elements": [
+        {
+          "type": "checkbox",
+          "name": "genres",
+          "title": "Select your favorite genres:",
+          "isRequired": true,
+          "choices": []
+        },
+        {
+          "type": "dropdown",
+          "name": "releaseYear",
+          "title": "Select your preferred release year:",
+          "isRequired": true,
+          "choices": [
+            { "value": "1990s", "text": "1990s" },
+            { "value": "2000s", "text": "2000s" },
+            { "value": "2010s", "text": "2010s" },
+            { "value": "2020s", "text": "2020s" }
+          ]
+        }
+      ]
+    }
+  ],
+  "showProgressBar": "top",
+  "completeText": "Submit",
+  "showQuestionNumbers": "off"
+}
