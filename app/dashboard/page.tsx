@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/hooks/context/auth-context";
 import dynamic from "next/dynamic";
+import { registerRandomizer } from "@/custom-survey/components/RandomizeSelection";
 
 const WatchList = dynamic(() => import("@/components/WatchList"), {
   ssr: false,
@@ -16,6 +17,10 @@ export default function Dashboard() {
   const { isAuthenticated } = useAuth();
 
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    registerRandomizer();
+  }, [])
 
   useEffect(() => {
     if (isAuthenticated !== undefined) {

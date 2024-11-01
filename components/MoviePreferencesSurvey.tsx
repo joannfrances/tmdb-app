@@ -37,7 +37,6 @@ const MoviePreferencesSurvey: React.FC<MoviePreferencesSurveyProps> = ({
   }, [model]);
 
   useEffect(() => {
-    registerRandomizer();
     const savedData = localStorage.getItem("surveyData");
     if (savedData) {
       setIsSurveyVisible(false);
