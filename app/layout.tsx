@@ -4,7 +4,6 @@ import "./globals.css";
 import { AuthProvider } from "../lib/hooks/context/auth-context";
 import { WatchlistProvider } from "@/lib/hooks/context/watchlist-context";
 import Header from "@/components/Header";
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

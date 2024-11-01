@@ -1,0 +1,12 @@
+.sd-btn {
+    box-shadow: none;
+}
+
+.sd-navigation__complete-btn {
+    background-color: var(--sjs-special-green);
+    color: var(--sjs-special-green-forecolor);
+}
+
+.sd-progress-buttons {
+    display: none;
+}

@@ -2610,6 +2610,11 @@ survey-core@^1.12.7:
   resolved "https://registry.yarnpkg.com/survey-core/-/survey-core-1.12.7.tgz#fb735be88d47bc53a68267098b2e47d0c7833653"
   integrity sha512-2fTWhv6gYl8+i+epeHRGa7kwSgf+iYpJHPOxNYuJ7SHz6BV0p0vjnw1pI5AEhfL47UNFN2+MqVN0M91FmbVa/A==
 
+survey-creator-core@^1.12.7:
+  version "1.12.7"
+  resolved "https://registry.yarnpkg.com/survey-creator-core/-/survey-creator-core-1.12.7.tgz#363206d5c8a4befcb9d356357c2de7e7b71029fd"
+  integrity sha512-2tlCw7nPrXhrqOiAO6G4Jx0MS43LBFtw/Lj80WOV9H+xjHf9jejL7nGeo9jpFuAIwxoJ99UOrLn+om+t1+e/Gg==
+
 survey-react-ui@^1.12.7:
   version "1.12.7"
   resolved "https://registry.yarnpkg.com/survey-react-ui/-/survey-react-ui-1.12.7.tgz#0ddda83f33883c7d92f5589dab88e5a73444408a"

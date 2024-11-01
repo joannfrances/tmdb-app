@@ -1,7 +1,13 @@
-interface Genre {
-  id: string;
-  name: string;
-}
+import React, { useState, useEffect } from "react";
+import { Survey } from "survey-react-ui";
+import { Model } from "survey-core";
+import "survey-core/defaultV2.css";
+import "./surveyStyles.css";
+import { themeJson } from "@/custom-survey/theme";
+import MovieCard from "./MovieCard";
+import surveyJson from "../data/moviePreferencesSurvey.json";
+import Spinner from "./Spinner";
+import { registerRandomizer } from "@/custom-survey/components/RandomizeSelection";
 
 interface Movie {
   id: number;
@@ -12,79 +18,126 @@ interface Movie {
   poster_path: string;
 }
 
-type Actor = Genre;
+interface MoviePreferencesSurveyProps {
+  onMovieSelect?: (movie: Movie) => void;
+  restartSurvey?: boolean;
+}
 
-import React, { useEffect, useState } from "react";
-import { Survey } from "survey-react-ui";
-import "survey-core/defaultV2.css";
-import MovieCard from "./MovieCard";
-import surveyJson from "../data/moviePreferencesSurvey.json";
-
-const MoviePreferencesSurvey = () => {
-  const [genres, setGenres] = useState<Genre[]>([]);
+const MoviePreferencesSurvey: React.FC<MoviePreferencesSurveyProps> = ({
+  onMovieSelect,
+}) => {
+  const [model, setModel] = useState<Model>(new Model(surveyJson));
   const [recommendations, setRecommendations] = useState<Movie[]>([]);
+  const [isSurveyVisible, setIsSurveyVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchMovieData = async () => {
-      const response = await fetch("/api/movieData");
-      const data = await response.json();
-      if (response.ok) {
-        setGenres(data.genres);
-      } else {
-        console.error("Failed to fetch movie data:", data.error);
-      }
-    };
+    model.applyTheme(themeJson);
+    model.css = { ...model.css, "randomize-selection": model.css.tagbox };
+  }, [model]);
 
-    fetchMovieData();
+  useEffect(() => {
+    registerRandomizer();
+    const savedData = localStorage.getItem("surveyData");
+    if (savedData) {
+      setIsSurveyVisible(false);
+      const parsedData = JSON.parse(savedData);
+      fetchRecommendations(parsedData);
+    }
   }, []);
 
-  const updatedSurveyJson = {
-    ...surveyJson,
-    pages: [
-      {
-        ...surveyJson.pages[0],
-        elements: surveyJson.pages[0].elements.map((element) => {
-          if (element.name === "genres") {
-            return {
-              ...element,
-              choices: genres.map((genre) => ({
-                value: genre.id,
-                text: genre.name,
-              })),
-            };
-          }
-          return element;
-        }),
-      },
-    ],
-  };
-
-  const onComplete = async (survey: { data: any }) => {
+  const fetchRecommendations = async (data: any) => {
+    setIsLoading(true);
     const response = await fetch("/api/recommendations", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(survey.data),
+      body: JSON.stringify(data),
     });
 
-    const data = await response.json();
+    const recommendationsData = await response.json();
+
+    setIsLoading(false);
     if (response.ok) {
-      setRecommendations(data);
+      setRecommendations(recommendationsData);
     } else {
-      console.error("Failed to fetch recommendations:", data.error);
+      console.error(
+        "Failed to fetch recommendations:",
+        recommendationsData.error
+      );
     }
+  };
+
+  const onComplete = async () => {
+    const surveyData = model.data;
+    localStorage.setItem("surveyData", JSON.stringify(surveyData));
+    fetchRecommendations(surveyData);
+    setIsSurveyVisible(false);
+  };
+
+  const onRetry = (data?: any) => {
+    const newModel = new Model(surveyJson);
+    if (data) {
+      newModel.data = data;
+    }
+    setModel(newModel);
+  };
+
+  const onDismiss = () => {
+    setIsSurveyVisible(false);
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      <Survey json={updatedSurveyJson} onComplete={onComplete} />
+      <div
+        className="relative"
+        style={{ display: `${isSurveyVisible && model ? "block" : "none"}` }}
+      >
+        <button
+          className="absolute top-0 right-0 m-4 text-black font-bold py-2 px-4 rounded z-10"
+          onClick={onDismiss}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <Survey model={model} onComplete={onComplete} />
+      </div>
+      {!isSurveyVisible && (
+        <div className="mt-2">
+          <button
+            onClick={() => {
+              setIsSurveyVisible(true);
+              const savedData = localStorage.getItem("surveyData");
+              let surveyData = undefined;
+              if (savedData) {
+                surveyData = JSON.parse(savedData);
+              }
+              onRetry(surveyData);
+            }}
+            className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md bg-white shadow-md "
+          >
+            Update Preferences
+          </button>
+        </div>
+      )}
+      {isLoading ? <Spinner /> : null}
       {recommendations?.length > 0 && (
         <div className="mt-4">
-          <h2 className="text-xl font-bold">Recommended Movies:</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {recommendations.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
+              <MovieCard key={movie.id} movie={movie} onClick={onMovieSelect} />
             ))}
           </div>
         </div>

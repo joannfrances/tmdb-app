@@ -1,63 +1,55 @@
-import { useState, useEffect } from 'react'
-import { Movie, MovieResponse } from '../types/movie'
-import MovieCard from './MovieCard'
-import MovieDetails from './MovieDetails'
-import Spinner from './Spinner'
+import { useState, useEffect } from "react";
+import { Movie, MovieResponse } from "../types/movie";
+import MovieCard from "./MovieCard";
+import MovieDetails from "./MovieDetails";
+import Spinner from "./Spinner";
 
 interface PopularMoviesProps {
-  title?: string
-  className?: string
-  initialPage?: number
-  onMovieSelect?: (movie: Movie) => void
+  className?: string;
+  initialPage?: number;
+  onMovieSelect?: (movie: Movie) => void;
 }
 
-export default function PopularMovies({ 
-  title = "Popular Movies",
+export default function PopularMovies({
   className = "",
   initialPage = 1,
-  onMovieSelect
+  onMovieSelect,
 }: PopularMoviesProps) {
-  const [movies, setMovies] = useState<Movie[]>([])
-  const [currentPage, setCurrentPage] = useState(initialPage)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const fetchMovies = async (page: number) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await fetch(`/api/movies/popular?page=${page}`)
-      const data: MovieResponse = await response.json()
-      setMovies(data.results)
-      setTotalPages(data.total_pages)
-      setCurrentPage(page)
+      const response = await fetch(`/api/movies/popular?page=${page}`);
+      const data: MovieResponse = await response.json();
+      setMovies(data.results);
+      setTotalPages(data.total_pages);
+      setCurrentPage(page);
     } catch (error) {
-      console.error('Error fetching movies:', error)
+      console.error("Error fetching movies:", error);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetchMovies(initialPage)
-  }, [initialPage])
+    fetchMovies(initialPage);
+  }, [initialPage]);
 
   const handleMovieClick = (movie: Movie) => {
     if (onMovieSelect) {
-      onMovieSelect(movie)
+      onMovieSelect(movie);
     } else {
-      setSelectedMovie(movie)
+      setSelectedMovie(movie);
     }
-  }
+  };
 
   return (
     <div className={`bg-gray-100 dark:bg-gray-900 py-8 px-4 ${className}`}>
       <div className="max-w-7xl mx-auto">
-        {title && (
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-            {title}
-          </h2>
-        )}
-        
         {loading ? (
           <Spinner />
         ) : (
@@ -102,5 +94,5 @@ export default function PopularMovies({
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,32 +1,39 @@
 {
   "title": "Movie Preferences Survey",
+  "logoFit": "none",
   "pages": [
     {
       "name": "preferences",
       "elements": [
         {
-          "type": "checkbox",
+          "type": "randomize-selection",
           "name": "genres",
-          "title": "Select your favorite genres:",
+          "title": "Select your favorite genres",
+          "description": "Or randomly select",
           "isRequired": true,
-          "choices": []
+          "choicesByUrl": {
+            "url": "/api/movieData",
+            "path": "genres",
+            "valueName": "id",
+            "titleName": "name"
+          },
+          "numberOfSelection": 3
         },
         {
           "type": "dropdown",
           "name": "releaseYear",
-          "title": "Select your preferred release year:",
-          "isRequired": true,
-          "choices": [
-            { "value": "1990s", "text": "1990s" },
-            { "value": "2000s", "text": "2000s" },
-            { "value": "2010s", "text": "2010s" },
-            { "value": "2020s", "text": "2020s" }
-          ]
+          "title": "Select your preferred release year",
+          "isRequired": false,
+          "choices": ["1990s", "2000s", "2010s", "2020s"]
         }
       ]
     }
   ],
+  "showTitle": false,
+  "showPageTitles": false,
+  "showQuestionNumbers": "off",
   "showProgressBar": "top",
   "completeText": "Submit",
-  "showQuestionNumbers": "off"
+  "widthMode": "responsive",
+  "showCompletedPage": false
 }

@@ -3,17 +3,24 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const { genres, releaseYear } = await request.json();
 
-  const decade = releaseYear.slice(0, 3);
-  const startDate = `${parseInt(decade) * 10}-01-01`;
-  const endDate =
-    releaseYear === "2020s"
-      ? `${new Date().getFullYear()}-12-31`
-      : `${parseInt(decade) * 10 + 9}-12-31`;
+  let startDate, endDate;
+  let releaseDateParams = "";
+
+  if (releaseYear) {
+    const decade = releaseYear.slice(0, 3);
+    startDate = `${parseInt(decade) * 10}-01-01`;
+    endDate =
+      releaseYear === "2020s"
+        ? `${new Date().getFullYear()}-12-31`
+        : `${parseInt(decade) * 10 + 9}-12-31`;
+
+    releaseDateParams = `&primary_release_date.gte=${startDate}&primary_release_date.lte=${endDate}`;
+  }
 
   try {
     const genreIds = genres.join("|");
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/movie?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreIds}&primary_release_date.gte=${startDate}&primary_release_date.lte=${endDate}`
+      `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/movie?api_key=${process.env.TMDB_API_KEY}&with_genres=${genreIds}${releaseDateParams}`
     );
 
     if (!response.ok) {
