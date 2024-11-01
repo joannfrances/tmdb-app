@@ -14,7 +14,6 @@ export class RandomizerModel extends QuestionTagboxModel {
   }
 
   get cssClasses() {
-    console.log(this.cssClassesValue);
     return super.cssClasses;
   }
 
