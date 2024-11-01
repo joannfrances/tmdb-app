@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (sessionId) {
       router.push("/dashboard");
     }
-  }, [sessionId]);
+  }, [router, sessionId]);
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

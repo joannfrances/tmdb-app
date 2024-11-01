@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const data: MovieResponse = await response.json();
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         page: 1,

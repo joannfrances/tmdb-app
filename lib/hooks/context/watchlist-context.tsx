@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useCallback, ReactNode } from "react";
 import { Movie } from "@/types/movie";
 import { useAuth } from "./auth-context";
 
 interface WatchlistContextType {
   addToWatchlist: (movie: Movie) => Promise<void>;
   removeFromWatchlist: (movieId: number) => Promise<void>;
-  refreshWatchlist: () => void;
 }
 
 const WatchlistContext = createContext<WatchlistContextType | undefined>(
@@ -22,11 +15,6 @@ const WatchlistContext = createContext<WatchlistContextType | undefined>(
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
   const { accountId } = useAuth();
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const refreshWatchlist = useCallback(() => {
-    setRefreshKey((prev) => prev + 1);
-  }, []);
 
   const addToWatchlist = useCallback(
     async (movie: Movie) => {
@@ -44,13 +32,11 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         });
 
         if (!response.ok) throw new Error("Failed to add to watchlist");
-
-        refreshWatchlist();
-      } catch (error) {
+      } catch {
         throw new Error("Failed to add to watchlist");
       }
     },
-    [accountId, refreshWatchlist]
+    [accountId]
   );
 
   const removeFromWatchlist = useCallback(
@@ -79,7 +65,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         throw error;
       }
     },
-    [accountId, refreshWatchlist]
+    [accountId]
   );
 
   return (
@@ -87,7 +73,6 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
       value={{
         addToWatchlist,
         removeFromWatchlist,
-        refreshWatchlist,
       }}
     >
       {children}

@@ -12,7 +12,7 @@ export default function MovieCard({
   onClick,
   onRemove,
 }: MovieCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     if (onClick) {
       onClick(movie);
     }

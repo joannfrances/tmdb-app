@@ -42,7 +42,7 @@ export default function WatchList({
         setTotalPages(data.total_pages);
         setCurrentPage(page);
         setError("");
-      } catch (err) {
+      } catch {
         setError("Failed to load watchlist");
       }
       setLoading(false);
@@ -71,7 +71,7 @@ export default function WatchList({
     try {
       await removeFromWatchlist(selectedMovieId);
       refresh();
-    } catch (err) {
+    } catch {
       setError("Failed to remove movie from watchlist");
     } finally {
       setShowModal(false);
@@ -80,7 +80,7 @@ export default function WatchList({
   };
 
   useEffect(() => {
-    if (window) {
+    if (typeof window !== "undefined") {
       window.refreshWatchlist = async () => {
         await fetchWatchlist(1);
         watchlistRef.current?.scrollIntoView({ 

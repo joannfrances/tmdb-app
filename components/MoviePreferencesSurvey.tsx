@@ -46,7 +46,7 @@ const MoviePreferencesSurvey: React.FC<MoviePreferencesSurveyProps> = ({
     }
   }, []);
 
-  const fetchRecommendations = async (data: any) => {
+  const fetchRecommendations = async (data: unknown) => {
     setIsLoading(true);
     const response = await fetch("/api/recommendations", {
       method: "POST",
@@ -76,7 +76,7 @@ const MoviePreferencesSurvey: React.FC<MoviePreferencesSurveyProps> = ({
     setIsSurveyVisible(false);
   };
 
-  const onRetry = (data?: any) => {
+  const onRetry = (data?: unknown) => {
     const newModel = new Model(surveyJson);
     if (data) {
       newModel.data = data;

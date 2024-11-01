@@ -41,11 +41,11 @@ const Recommendations = () => {
     setIsAdding(true);
     try {
       await addToWatchlist(selectedMovie);
-      if (window.refreshWatchlist) {
+      if (typeof window !== "undefined" && window.refreshWatchlist) {
         window.refreshWatchlist();
       }
       setModalType("success");
-    } catch (error) {
+    } catch {
       setModalType("error");
     } finally {
       setIsAdding(false);
@@ -138,7 +138,7 @@ const Recommendations = () => {
             }
           >
             <p className="text-sm">
-              Would you like to add "{selectedMovie.title}" to your watchlist?
+              Would you like to add &quot;{selectedMovie.title}&quot; to your watchlist?
             </p>
           </Modal>
         );
@@ -178,7 +178,7 @@ const Recommendations = () => {
             }
           >
             <p className="text-sm">
-              "{selectedMovie.title}" has been added to your watchlist.
+              &quot;{selectedMovie.title}&quot; has been added to your watchlist.
             </p>
           </Modal>
         );

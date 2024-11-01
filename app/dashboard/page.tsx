@@ -2,25 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/hooks/context/auth-context";
-import WatchList from "@/components/WatchList";
-import Spinner from "@/components/Spinner";
-import Recommendations from "@/components/Recommendations";
+import dynamic from "next/dynamic";
 
+const WatchList = dynamic(() => import("@/components/WatchList"), {
+  ssr: false,
+});
+const Recommendations = dynamic(() => import("@/components/Recommendations"), {
+  ssr: false,
+});
+const Spinner = dynamic(() => import("@/components/Spinner"), { ssr: false });
 
 export default function Dashboard() {
   const { isAuthenticated } = useAuth();
- 
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      setLoading(false);
+    if (isAuthenticated !== undefined) {
+      // Add check for undefined
+      setLoading(!isAuthenticated);
     }
   }, [isAuthenticated]);
 
   if (loading) return <Spinner />;
-
-  
 
   return (
     <>
