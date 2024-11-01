@@ -7,7 +7,6 @@ import { themeJson } from "@/custom-survey/theme";
 import MovieCard from "./MovieCard";
 import surveyJson from "../data/moviePreferencesSurvey.json";
 import Spinner from "./Spinner";
-import { registerRandomizer } from "@/custom-survey/components/RandomizeSelection";
 
 interface Movie {
   id: number;
